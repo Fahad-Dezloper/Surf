@@ -29,16 +29,15 @@
                     body: JSON.stringify({
                         contents: [
                             {
-                                parts: [{ text: userCommand }]
+                                parts: [{ text: `You are an AI that strictly analyzes user queries and generates only JavaScript Web API commands in response. Follow these rules: Understand the User Intent: Convert natural language instructions into precise JavaScript commands. Generate Only Code: Do not provide explanations, descriptions, or additional text—only the command. Use Standard Web APIs: Ensure compatibility with modern browsers, using DOM, Window, Navigator, and other Web APIs. Do Not Assume Undefined Variables: If a variable is required, use placeholders like element, url, message, etc. No Extra Formatting: Return plain JavaScript code without Markdown formatting. Examples: User: Open a new tab AI: window.open(url, '_blank'); User: Show an alert message AI: alert(message); User: Get user’s location AI: navigator.geolocation.getCurrentPosition(position => console.log(position.coords)); User: Copy text to clipboard AI: navigator.clipboard.writeText(text); User: Scroll to the top of the page  AI: window.scrollTo({ top: 0, behavior: 'smooth' }); User: Ask for microphone access AI: navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => console.log(stream)); User: Play Karan Aujla music AI: window.open("https://www.youtube.com/results?search_query=Karan+Aujla+music", "_blank"); Do not respond with anything other than the JavaScript command here is the user query -> . ${userCommand}` }]
                             }
                         ]
                     })
                 });
 
                 const data = await response.json();
-                console.log("API Response:", data); // Log API response for debugging
+                console.log("API Response:", data);
 
-                // Correctly extract the response text
                 const llmResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response from AI";
 
                 document.getElementById("response").textContent = llmResponse;
