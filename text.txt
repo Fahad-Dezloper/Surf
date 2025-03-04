@@ -9,14 +9,21 @@
 
 <body>
     <div>
-        <input type="text" id="command" placeholder="Enter command">
-        <button id="startBtn">Do that work</button>
+        <button id="startListening">🎤 Speak Now</button>
+        <p id="command">Waiting for command...</p>
         <p id="response">Waiting for response...</p>
     </div>
 
     <script>
         const API_KEY = "AIzaSyBwv7qeYsxn7G42N6LCeAmA30FBcNcd2II";
 
+        // Voice recognition setup
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "en-US";
+        recognition.interimResults = false;
+        recognition.continuous = false;
+
+        // Function to get command from LLM
         const getCommandFromLLM = async (userCommand) => {
             try {
                 document.getElementById("response").textContent = "Fetching response...";
@@ -40,35 +47,38 @@
 
                 const llmResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response from AI";
 
-                executeWebAPI(llmResponse);
-
                 document.getElementById("response").textContent = llmResponse;
+
+                // Execute the received JavaScript command
+                try {
+                    eval(llmResponse);
+                } catch (error) {
+                    console.error("Error executing command:", error);
+                }
             } catch (error) {
                 document.getElementById("response").textContent = "Error fetching response";
                 console.error("Error fetching from Gemini API:", error);
             }
         };
 
-        const executeWebAPI = (command) => {
-            try {
-                if (command.includes("window.open") || command.includes("alert") || command.includes("navigator.")) {
-                    eval(command); // Execute the command
-                } else {
-                    console.warn("Untrusted command, not executing:", command);
-                }
-            } catch (error) {
-                console.error("Error executing command:", error);
-            }
-        };
-
-        document.getElementById("startBtn").addEventListener("click", () => {
-            const userCommand = document.getElementById("command").value.trim();
-            if (userCommand) {
-                getCommandFromLLM(userCommand);
-            } else {
-                document.getElementById("response").textContent = "Please enter a command.";
-            }
+        // Start voice recognition on button click
+        document.getElementById("startListening").addEventListener("click", () => {
+            document.getElementById("command").textContent = "Listening...";
+            recognition.start();
         });
+
+        // Process the speech result
+        recognition.onresult = (event) => {
+            const userCommand = event.results[0][0].transcript;
+            document.getElementById("command").textContent = `You said: "${userCommand}"`;
+            getCommandFromLLM(userCommand);
+        };
+
+        // Handle recognition errors
+        recognition.onerror = (event) => {
+            console.error("Speech Recognition Error:", event.error);
+            document.getElementById("command").textContent = "Could not understand. Try again.";
+        };
     </script>
 </body>
 
