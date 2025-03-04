@@ -82,7 +82,7 @@
 
         const executeWebAPI = (command) => {
             try {
-                if (command.includes("window.open") || command.includes("alert") || command.includes("navigator.")) {
+                if (command.includes("window.open") || command.includes("alert") || command.includes("navigator.") || command.includes("document.body.style.zoom") || command.includes("document.documentElement.style.transform")) {
                     eval(command);
                 } else {
                     console.warn("Untrusted command, not executing:", command);
