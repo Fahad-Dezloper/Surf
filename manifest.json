@@ -3,19 +3,25 @@
     "name": "Voice Command Browser Assistant",
     "version": "1.0",
     "description": "A voice assistant for browser automation",
-    "permissions": ["tabs", "activeTab", "storage"],
-    "host_permissions": ["https://*/*"],
+    "permissions": ["tabs", "activeTab", "storage", "scripting", "offscreen"],
+    "host_permissions": ["https://generativelanguage.googleapis.com/*", "http://localhost:3000/*"],
     "background": {
-      "service_worker": "background.js"
+      "service_worker": "background.js",
+      "type":"module"
     },
+    "web_accessible_resources": [
+    {
+      "resources": ["requestPermissions.html", "requestPermissions.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
     "action": {
-      "default_popup": "popup.html"
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["content.js"]
-      }
-    ]
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "surf.png",
+      "48": "surf.png",
+      "128": "surf.png"
+    }
+  }
   }
   

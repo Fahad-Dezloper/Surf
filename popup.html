@@ -1,154 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Assistant</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        .container {
-            text-align: center;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        #startBtn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-        #response {
-            margin-top: 20px;
-            font-style: italic;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
+
     <div class="container">
-        <button id="startBtn">Start Voice Command</button>
-        <p id="response">Waiting for voice command...</p>
+        <div class="search-wrapper">
+            <p id="response">Waiting for voice command...</p>
+            <div class="search-container">
+                <input type="text" id="queryInput" placeholder="Paaji Tussi Great Ho" class="search-input">
+                <button id="startBtn" class="voice-btn">
+                    <i class="fas fa-microphone"></i>
+                </button>
+            </div>
+            <div class="example-queries examples">
+                <h3>Try searching for:</h3>
+                <div class="query-items">
+                    <div class="query-item example-query">
+                        <i class="fas fa-search"></i>
+                        <span>🍻 Play Daru aur Code with harkirat singh</span>
+                    </div>
+                    <div class="query-item example-query">
+                        <i class="fas fa-search"></i>
+                        <span>100 x Devs Podcast</span>
+                    </div>
+                    <div class="query-item example-query">
+                        <i class="fas fa-search"></i>
+                        <span>Open app.100xdevs.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        const API_KEY = "AIzaSyBwv7qeYsxn7G42N6LCeAmA30FBcNcd2II";
+    <script src="popup.js"></script>
 
-        const getCommandFromLLM = async (userCommand) => {
-            try {
-                document.getElementById("response").textContent = "Fetching response...";
-
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        contents: [
-                            {
-                                parts: [{ text: `You are an AI that strictly analyzes user queries and generates only JavaScript Web API commands in response. Follow these rules: Understand the User Intent: Convert natural language instructions into precise JavaScript commands. Generate Only Code: Do not provide explanations, descriptions, or additional text—only the command. Use Standard Web APIs: Ensure compatibility with modern browsers, using DOM, Window, Navigator, and other Web APIs. Do Not Assume Undefined Variables: If a variable is required, use placeholders like element, url, message, etc. No Extra Formatting: Return plain JavaScript code without Markdown formatting. Examples: User: Open a new tab AI: window.open(url, '_blank'); User: Show an alert message AI: alert(message); User: Get user's location AI: navigator.geolocation.getCurrentPosition(position => console.log(position.coords)); User: Copy text to clipboard AI: navigator.clipboard.writeText(text); User: Scroll to the top of the page  AI: window.scrollTo({ top: 0, behavior: 'smooth' }); User: Ask for microphone access AI: navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => console.log(stream)); User: Play Karan Aujla music AI: window.open("https://www.youtube.com/results?search_query=Karan+Aujla+music", "_blank"); Do not respond with anything other than the JavaScript command here is the user query -> . ${userCommand}` }]
-                            }
-                        ]
-                    })
-                });
-
-                const data = await response.json();
-                console.log("API Response:", data);
-
-                const llmResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response from AI";
-
-                executeWebAPI(llmResponse);
-
-                document.getElementById("response").textContent = llmResponse;
-            } catch (error) {
-                document.getElementById("response").textContent = "Error fetching response";
-                console.error("Error fetching from Gemini API:", error);
-            }
-        };
-
-        const playYouTubeVideo = async (searchQuery) => {
-            try {
-                await fetch("http://localhost:3000/search", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ query: searchQuery })
-                });
-
-                document.getElementById("response").textContent = `Playing: ${searchQuery}`;
-            } catch (error) {
-                console.error("Error fetching video:", error);
-                document.getElementById("response").textContent = "Error playing video";
-            }
-        };
-
-
-        const executeWebAPI = (command) => {
-            try {
-                if (command.includes("youtube.com/results?search_query=")) {
-                    const searchQueryMatch = command.match(/search_query=([^"]+)/);
-                        if (searchQueryMatch) {
-                            playYouTubeVideo(decodeURIComponent(searchQueryMatch[1]));
-                        }
-                }
-                else if (command.includes("window.open") || command.includes("alert") || command.includes("navigator.") || command.includes("document.body.style.zoom") || command.includes("document.documentElement.style.transform")) {
-                    eval(command);
-                } else {
-                    console.warn("Untrusted command, not executing:", command);
-                }
-            } catch (error) {
-                console.error("Error executing command:", error);
-            }
-        };
-
-        const startVoiceRecognition = () => {
-            if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                const recognition = new SpeechRecognition();
-
-                recognition.lang = 'en-US';
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
-
-                recognition.onstart = () => {
-                    document.getElementById("response").textContent = "Listening... Speak your command";
-                };
-
-                recognition.onresult = (event) => {
-                    const userCommand = event.results[0][0].transcript;
-                    document.getElementById("response").textContent = `Recognized: ${userCommand}`;
-                    getCommandFromLLM(userCommand);
-                };
-
-                recognition.onerror = (event) => {
-                    document.getElementById("response").textContent = `Error occurred in recognition: ${event.error}`;
-                };
-
-                recognition.onend = () => {
-                    document.getElementById("response").textContent = "Voice recognition ended";
-                };
-
-                recognition.start();
-            } else {
-                document.getElementById("response").textContent = "Speech recognition not supported";
-            }
-        };
-
-        document.getElementById("startBtn").addEventListener("click", startVoiceRecognition);
-    </script>
 </body>
-
 </html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            width: fit-content;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .examples {
+            /* background: #fff; */
+            padding: 15px;
+            border-radius: 8px;
+            gap: 15px;
+            /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+            text-align: left;
+            display: flex;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .examples button {
+            background-color: #4CAF50;
+            margin: 5px 0;
+            padding: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: #555;
+            cursor: pointer;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+            color: #fff;
+        }
+        #response {
+            margin-top: 15px;
+            font-style: italic;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Ask me anything!</h2>
+        
+        <div class="examples">
+            <button class="example-query"> "Buy iPhone on Flipkart"</button>
+            <button class="example-query">🔹 "Find laptops on Amazon"</button>
+            <button class="example-query">🔹 "Search for Samsung phones on Flipkart"</button>
+        </div>
+
+        <input type="text" id="queryInput" placeholder="Type your query here...">
+        
+        <div class="btn-container">
+            <button id="startBtn">🎙 Start Voice Command</button>
+        </div>
+
+        <p id="response">Waiting for voice command...</p>
+    </div>
+
+    <script src="popup.js"></script>
+
+</body>
+</html>
