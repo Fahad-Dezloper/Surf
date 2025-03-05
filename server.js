@@ -11,7 +11,7 @@ app.post("/search", async (req, res) => {
     if (!query) return res.status(400).json({ error: "Missing search query" });
 
     try {
-        const browser = await puppeteer.launch({ headless: false, args: ["--no-sandbox"] });
+        const browser = await puppeteer.launch( {headless: false, args: ["--no-sandbox"],  executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"});
         const page = await browser.newPage();
         await page.goto(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`);
         await page.waitForSelector('ytd-video-renderer a#thumbnail', { timeout: 5000 });
@@ -35,7 +35,7 @@ app.post("/amazon/add-to-cart", async (req, res) => {
     if (!query) return res.status(400).json({ error: "Missing product query" });
 
     try {
-        const browser = await puppeteer.launch({ headless: false, args: ["--no-sandbox"] });
+        const browser = await puppeteer.launch({ headless: false, args: ["--no-sandbox"], executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" });
         const page = await browser.newPage();
 
         await page.goto(`https://www.amazon.in/s?k=${encodeURIComponent(query)}`, { waitUntil: "domcontentloaded" });
@@ -66,7 +66,7 @@ app.post("/flipkart/add-to-cart", async (req, res) => {
     const { query } = req.body;
     if (!query) return res.status(400).json({ error: "Missing product query" });
 
-    const browser = await puppeteer.launch({ headless: false, args: ["--no-sandbox"] });
+    const browser = await puppeteer.launch({ headless: false, args: ["--no-sandbox"], executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" });
     const page = await browser.newPage();
 
     await page.goto(`https://www.flipkart.com/search?q=${encodeURIComponent(query)}`, { waitUntil: "domcontentloaded" });

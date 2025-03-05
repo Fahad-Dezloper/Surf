@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyDnPApRMQNPxXm4xxbzCH2-e_12q2kljXU";
+const API_KEY = "AIzaSyB4m4N94YFzKbQHHV-6leennxiTpq87uSk";
 
 document.addEventListener("DOMContentLoaded", () => { 
     const inputField = document.getElementById("queryInput");
